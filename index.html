@@ -1,272 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divyansh Verma - Visual Artist & Designer</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>Divyansh Verma — Visual Artist & Designer</title>
+  <meta name="description" content="Portfolio of Divyansh Verma: VFX, 3D modeling, UI/UX, and digital marketing." />
+  <link rel="preload" href="style.css" as="style" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header__content">
-                <div class="header__logo">
-                    <h1>Divyansh Verma</h1>
-                </div>
-                <nav class="header__nav">
-                    <ul class="nav__list">
-                        <li><a href="#demo-reel" class="nav__link">Demo Reel</a></li>
-                        <li><a href="#home" class="nav__link">Home</a></li>
-                        <li><a href="#about" class="nav__link">About</a></li>
-                        <li><a href="#projects" class="nav__link">Projects</a></li>
-                        <li><a href="#skills" class="nav__link">Skills</a></li>
-                        <li><a href="#creative" class="nav__link">Creative Corner</a></li>
-                        <li><a href="#contact" class="nav__link">Contact</a></li>
-                    </ul>
-                    <button class="nav__toggle">☰</button>
-                </nav>
-                <button class="btn btn--secondary btn--sm edit-toggle">Edit Mode</button>
-            </div>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header__inner">
+      <div class="brand">
+        <span class="brand__dot"></span>
+        <a href="#home" class="brand__name" data-editable="personal.name">Divyansh Verma</a>
+      </div>
+      <nav class="nav" aria-label="Main navigation">
+        <button class="nav__toggle" aria-expanded="false" aria-controls="navMenu">☰</button>
+        <ul id="navMenu" class="nav__list">
+          <li><a href="#demo">Demo Reel</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#creative">Creative Corner</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="actions">
+        <button id="editToggle" class="btn btn--ghost">Edit Mode</button>
+        <div class="dropdown">
+          <button class="btn btn--ghost">Backup</button>
+          <div class="dropdown__menu">
+            <button id="exportData">Export JSON</button>
+            <label class="file-btn">
+              Import JSON
+              <input id="importData" type="file" accept="application/json" hidden />
+            </label>
+          </div>
         </div>
-    </header>
-
-    <!-- Demo Reel Section - Main Feature -->
-    <section id="demo-reel" class="demo-reel">
-        <div class="container">
-            <div class="demo-reel__content">
-                <h2 class="demo-reel__title">Demo Reel</h2>
-                <p class="demo-reel__subtitle">Upload and showcase your latest work</p>
-                
-                <div class="demo-reel__upload-zone" id="uploadZone">
-                    <div class="upload-zone__content">
-                        <div class="upload-zone__icon">📹</div>
-                        <h3>Drop your demo reel here</h3>
-                        <p>or click to browse</p>
-                        <p class="upload-zone__formats">Supports MP4, MOV, AVI • Max 100MB</p>
-                    </div>
-                    <input type="file" id="videoUpload" accept="video/*" class="upload-zone__input">
-                    <div class="upload-progress hidden" id="uploadProgress">
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
-                        </div>
-                        <span class="progress-text">Uploading... 0%</span>
-                    </div>
-                </div>
-
-                <div class="demo-reel__player hidden" id="videoPlayer">
-                    <video controls loop autoplay muted id="demoVideo">
-                        <source src="" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <div class="player-controls">
-                        <button class="btn btn--secondary btn--sm" id="replaceVideo">Replace Video</button>
-                        <button class="btn btn--outline btn--sm" id="removeVideo">Remove</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="hero__content">
-                <h1 class="hero__title editable" data-field="hero.headline">I'm a Visual Artist & Designer striving to create impactful innovation.</h1>
-                <p class="hero__subtitle editable" data-field="hero.subtitle">Hi! I'm Divyansh. I'm a Digital Marketing Strategist and VFX Artist specializing in 3D Modeling, Visual Effects, and UI/UX Design. I create with precision and drive change through immersive experiences.</p>
-                <div class="hero__cta">
-                    <a href="#projects" class="btn btn--primary">View My Work</a>
-                    <a href="#contact" class="btn btn--outline">Get In Touch</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="about__grid">
-                <div class="about__content">
-                    <h2 class="about__title editable" data-field="about.title">Hello! I'm Divyansh.</h2>
-                    <div class="about__text">
-                        <p class="editable" data-field="about.intro">I'm from Chicago, IL, and I am a multidisciplinary creative professional. I hold a Master's degree in Business Data Analytics from National Louis University and a Bachelor's degree in Visual Effects from the Savannah College of Art and Design.</p>
-                        
-                        <h3>I've explored many creative paths</h3>
-                        <p class="editable" data-field="about.journey">I started as a 3D artist and VFX specialist, creating volcanic simulations and architectural visualizations. I then expanded into digital marketing, UI/UX design, and business analytics, discovering that the intersection of creativity and data drives the most impactful innovation.</p>
-                        
-                        <h3>I want to innovate through visual storytelling</h3>
-                        <p class="editable" data-field="about.vision">I aim to create functional, efficient, and memorable experiences that solve real-world problems through the application of cutting-edge technology, design thinking, and data-driven insights.</p>
-                    </div>
-                </div>
-                <div class="about__image">
-                    <div class="image-placeholder">
-                        <span>Professional Photo</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <h2 class="projects__title">Featured Projects</h2>
-            <div class="projects__grid" id="projectsGrid">
-                <!-- Projects will be dynamically generated by JavaScript -->
-            </div>
-            <button class="btn btn--secondary add-project-btn hidden">+ Add New Project</button>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="skills">
-        <div class="container">
-            <h2 class="skills__title">Technical Expertise</h2>
-            <div class="skills__grid">
-                <div class="skill-category">
-                    <h3>3D & VFX</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Maya</span>
-                        <span class="skill-tag">Houdini</span>
-                        <span class="skill-tag">Unreal Engine</span>
-                        <span class="skill-tag">ZBrush</span>
-                        <span class="skill-tag">Substance Painter</span>
-                        <span class="skill-tag">Nuke</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Design</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Adobe Creative Suite</span>
-                        <span class="skill-tag">UI/UX Design</span>
-                        <span class="skill-tag">Visual Design</span>
-                        <span class="skill-tag">Motion Graphics</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Marketing</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Digital Marketing</span>
-                        <span class="skill-tag">SEO/SEM</span>
-                        <span class="skill-tag">Content Marketing</span>
-                        <span class="skill-tag">Social Media Marketing</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Analytics</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Python</span>
-                        <span class="skill-tag">R</span>
-                        <span class="skill-tag">SQL</span>
-                        <span class="skill-tag">Tableau</span>
-                        <span class="skill-tag">Business Intelligence</span>
-                        <span class="skill-tag">Data Analytics</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Creative Corner -->
-    <section id="creative" class="creative-corner">
-        <div class="container">
-            <h2 class="creative-corner__title">Creative Corner</h2>
-            <p class="creative-corner__subtitle">Experimental work, sketches, and personal projects</p>
-            <div class="creative-gallery">
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Creative Work #1</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Creative Work #2</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Creative Work #3</span>
-                    </div>
-                </div>
-                <div class="gallery-item">
-                    <div class="gallery-placeholder">
-                        <span>Creative Work #4</span>
-                    </div>
-                </div>
-            </div>
-            <button class="btn btn--secondary add-creative-btn hidden">+ Add Creative Work</button>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <div class="contact__content">
-                <div class="contact__text">
-                    <h2>Want to collaborate?</h2>
-                    <p>Let's create something amazing together</p>
-                </div>
-                <div class="contact__form">
-                    <form id="contactForm" novalidate>
-                        <div class="form-group">
-                            <label for="contactName" class="form-label">Name</label>
-                            <input type="text" id="contactName" class="form-control" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="contactEmail" class="form-label">Email</label>
-                            <input type="email" id="contactEmail" class="form-control" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="contactProjectType" class="form-label">Project Type</label>
-                            <select id="contactProjectType" class="form-control" name="projectType" required>
-                                <option value="">Select a project type</option>
-                                <option value="vfx">VFX & 3D Work</option>
-                                <option value="design">Design & Branding</option>
-                                <option value="marketing">Digital Marketing</option>
-                                <option value="analytics">Data Analytics</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="contactMessage" class="form-label">Message</label>
-                            <textarea id="contactMessage" class="form-control" name="message" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn--primary btn--full-width">Send Message</button>
-                    </form>
-                </div>
-                <div class="contact__info">
-                    <div class="contact-item">
-                        <strong>Email:</strong>
-                        <a href="mailto:divyanshv1911@gmail.com">divyanshv1911@gmail.com</a>
-                    </div>
-                    <div class="contact-item">
-                        <strong>Phone:</strong>
-                        <a href="tel:+19124413829">+1 (912) 441-3829</a>
-                    </div>
-                    <div class="contact-item">
-                        <strong>Location:</strong>
-                        <span>Chicago, IL</span>
-                    </div>
-                    <div class="contact-item">
-                        <strong>LinkedIn:</strong>
-                        <a href="https://www.linkedin.com/in/divyansh-verma-analytics" target="_blank">View Profile</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Project Modal -->
-    <div class="modal hidden" id="projectModal">
-        <div class="modal__overlay"></div>
-        <div class="modal__content">
-            <button class="modal__close">&times;</button>
-            <div class="modal__body" id="modalBody">
-                <!-- Project details will be inserted here -->
-            </div>
-        </div>
+      </div>
     </div>
+  </header>
 
-    <script src="app.js"></script>
+  <!-- Demo Reel (Primary) -->
+  <section id="demo" class="demo">
+    <div class="container">
+      <div class="section-head">
+        <h2>Demo Reel</h2>
+        <p class="muted">Upload and showcase your latest reel (loops automatically)</p>
+      </div>
+      <div class="demo__wrap">
+        <video id="demoVideo" class="demo__video" controls playsinline muted loop preload="metadata"></video>
+        <div class="upload dropzone" id="demoDropzone" data-accept="video/*">
+          <div class="dropzone__inner">
+            <svg class="ico"><use href="icons.svg#upload"/></svg>
+            <p><strong>Drag & drop</strong> your demo reel here or click to select</p>
+            <p class="hint">Recommended: MP4, up to 2GB locally. For larger files, configure Cloud Upload below.</p>
+            <input id="demoFile" type="file" accept="video/*" hidden />
+            <button class="btn" id="demoBrowse">Choose File</button>
+          </div>
+          <div class="progress" id="demoProgress" hidden>
+            <div class="progress__bar" id="demoProgressBar"></div>
+          </div>
+        </div>
+
+        <details class="cloud-uploads">
+          <summary>Cloud Upload (for very large files)</summary>
+          <div class="cloud-uploads__row">
+            <label>Upload Endpoint (S3-compatible or Uploadcare):</label>
+            <input id="cloudEndpoint" type="url" placeholder="https://upload-endpoint.example.com" />
+          </div>
+          <div class="cloud-uploads__row">
+            <label>API Key / Public Token:</label>
+            <input id="cloudToken" type="text" placeholder="public_key_or_bearer_token" />
+          </div>
+          <button class="btn btn--secondary" id="cloudUploadButton">Upload to Cloud</button>
+          <p class="hint">After upload, paste the file URL below to stream directly:</p>
+          <input id="demoURL" type="url" placeholder="https://cdn.example.com/path/to/reel.mp4" />
+          <button class="btn btn--ghost" id="useDemoURL">Use URL</button>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" class="projects">
+    <div class="container">
+      <div class="section-head">
+        <h2>Projects</h2>
+        <div class="section-actions">
+          <button class="btn btn--ghost" id="addProject">Add Project</button>
+        </div>
+      </div>
+
+      <ul id="projectList" class="project-grid" aria-live="polite"></ul>
+
+      <!-- Project Modal -->
+      <dialog id="projectModal" class="modal">
+        <form method="dialog" class="modal__content" id="projectForm">
+          <header class="modal__header">
+            <h3 id="projectModalTitle">Edit Project</h3>
+            <button class="modal__close" value="cancel" aria-label="Close">×</button>
+          </header>
+          <div class="modal__body">
+            <div class="grid-2">
+              <label>Title<input name="title" required /></label>
+              <label>Subtitle<input name="subtitle" /></label>
+              <label>Timeline<input name="timeline" /></label>
+              <label>Roles<input name="roles" placeholder="Comma separated" /></label>
+              <label>Tools<input name="tools" placeholder="Comma separated" /></label>
+              <label>Summary<textarea name="summary" rows="2"></textarea></label>
+              <label>Details<textarea name="details" rows="4"></textarea></label>
+            </div>
+
+            <div class="uploader-group">
+              <h4>Cover Image</h4>
+              <div class="thumb-uploader">
+                <img id="coverPreview" alt="" />
+                <div class="upload mini dropzone" id="coverDrop" data-accept=\"image/*\">
+                  <div class="dropzone__inner small">
+                    <svg class="ico"><use href="icons.svg#image"/></svg>
+                    <p>Drop or click</p>
+                    <input id="coverFile" type="file" accept="image/*" hidden />
+                    <button class="btn btn--sm" id="coverBrowse">Choose</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="uploader-group">
+              <h4>Gallery Images</h4>
+              <div class="gallery" id="galleryPreview"></div>
+              <div class="upload mini dropzone" id="galleryDrop" data-accept=\"image/*\" data-multiple=\"true\">
+                <div class="dropzone__inner small">
+                  <svg class="ico"><use href="icons.svg#images"/></svg>
+                  <p>Drop or click to add</p>
+                  <input id="galleryFiles" type="file" accept="image/*" multiple hidden />
+                  <button class="btn btn--sm" id="galleryBrowse">Add Images</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="modal__footer">
+            <button class="btn btn--danger" id="deleteProject" type="button">Delete</button>
+            <div class="spacer"></div>
+            <button class="btn btn--ghost" value="cancel">Cancel</button>
+            <button class="btn" id="saveProject" value="default">Save</button>
+          </footer>
+        </form>
+      </dialog>
+    </div>
+  </section>
+
+  <!-- Creative Corner -->
+  <section id="creative" class="creative">
+    <div class="container">
+      <div class="section-head">
+        <h2>Creative Corner</h2>
+        <div class="section-actions">
+          <button class="btn btn--ghost" id="addCreative">Add Post</button>
+        </div>
+      </div>
+
+      <ul id="creativeList" class="creative-grid"></ul>
+
+      <!-- Creative Modal -->
+      <dialog id="creativeModal" class="modal">
+        <form method="dialog" class="modal__content" id="creativeForm">
+          <header class="modal__header">
+            <h3 id="creativeModalTitle">Add Creative Post</h3>
+            <button class="modal__close" value="cancel" aria-label="Close">×</button>
+          </header>
+          <div class="modal__body">
+            <label>Caption<textarea name="caption" rows="2" placeholder="Say something about this piece..."></textarea></label>
+
+            <div class="uploader-group">
+              <h4>Media (image or video)</h4>
+              <div class="creative-media">
+                <img id="creativeImagePreview" alt="" />
+                <video id="creativeVideoPreview" controls playsinline muted hidden></video>
+              </div>
+              <div class="upload mini dropzone" id="creativeDrop" data-accept=\"image/*,video/*\">
+                <div class="dropzone__inner small">
+                  <svg class="ico"><use href="icons.svg#upload"/></svg>
+                  <p>Drop or click to add</p>
+                  <input id="creativeFile" type="file" accept="image/*,video/*" hidden />
+                  <button class="btn btn--sm" id="creativeBrowse">Choose</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="modal__footer">
+            <button class="btn btn--danger" id="deleteCreative" type="button">Delete</button>
+            <div class="spacer"></div>
+            <button class="btn btn--ghost" value="cancel">Cancel</button>
+            <button class="btn" id="saveCreative" value="default">Save</button>
+          </footer>
+        </form>
+      </dialog>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills" class="skills">
+    <div class="container">
+      <div class="section-head"><h2>Skills</h2></div>
+      <div id="skillsWrap" class="skills__wrap"></div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="about">
+    <div class="container">
+      <div class="about__inner">
+        <div class="about__text">
+          <h2>About</h2>
+          <p data-editable="about.intro">I'm a multidisciplinary creative... (click Edit Mode to customize)</p>
+          <p data-editable="about.journey">From VFX and 3D to data-driven design...</p>
+          <p data-editable="about.vision">I aim to create memorable experiences...</p>
+        </div>
+        <div class="about__media">
+          <img id="profileImage" alt="Profile photo" />
+          <div class="upload mini dropzone" id="profileDrop" data-accept="image/*">
+            <div class="dropzone__inner small">
+              <svg class="ico"><use href="icons.svg#image"/></svg>
+              <p>Drop/click profile image</p>
+              <input id="profileFile" type="file" accept="image/*" hidden />
+              <button class="btn btn--sm" id="profileBrowse">Choose</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <div class="section-head"><h2>Contact</h2></div>
+      <div class="contact__grid">
+        <div class="contact__info">
+          <p><strong>Email:</strong> <span data-editable="personal.email">divyanshv1911@gmail.com</span></p>
+          <p><strong>Phone:</strong> <span data-editable="personal.phone">+1(912)441-3829</span></p>
+          <p><strong>Location:</strong> <span data-editable="personal.location">Chicago, IL</span></p>
+          <p><strong>LinkedIn:</strong> <a href="#" id="linkedinLink" rel="noopener">View</a></p>
+        </div>
+        <form class="contact__form" onsubmit="event.preventDefault(); alert('Form submitted (configure a service like Netlify Forms or Formspree to receive messages).');">
+          <label>Name<input required /></label>
+          <label>Email<input type="email" required /></label>
+          <label>Project Type<input /></label>
+          <label>Message<textarea rows="4" required></textarea></label>
+          <button class="btn" type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Icons -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="upload" viewBox="0 0 24 24"><path d="M5 20h14v-2H5m7-9l5 5h-3v4h-4v-4H7l5-5z"/></symbol>
+    <symbol id="image" viewBox="0 0 24 24"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14m18 0H3m18 0V5M3 19V5m4 8 3-3 4 4 3-3 3 3"/></symbol>
+    <symbol id="images" viewBox="0 0 24 24"><path d="M4 6h12v12H4zM8 2h12v12H8z"/></symbol>
+  </svg>
+
+  <script defer src="storage.js"></script>
+  <script defer src="uploader.js"></script>
+  <script defer src="app.js"></script>
 </body>
 </html>
