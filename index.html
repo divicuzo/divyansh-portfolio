@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divyansh Verma - Visual Artist & Designer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header__content">
+                <div class="header__logo">
+                    <h1>Divyansh Verma</h1>
+                </div>
+                <nav class="header__nav">
+                    <ul class="nav__list">
+                        <li><a href="#demo-reel" class="nav__link">Demo Reel</a></li>
+                        <li><a href="#home" class="nav__link">Home</a></li>
+                        <li><a href="#about" class="nav__link">About</a></li>
+                        <li><a href="#projects" class="nav__link">Projects</a></li>
+                        <li><a href="#skills" class="nav__link">Skills</a></li>
+                        <li><a href="#creative" class="nav__link">Creative Corner</a></li>
+                        <li><a href="#contact" class="nav__link">Contact</a></li>
+                    </ul>
+                    <button class="nav__toggle">☰</button>
+                </nav>
+                <button class="btn btn--secondary btn--sm edit-toggle">Edit Mode</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Demo Reel Section - Main Feature -->
+    <section id="demo-reel" class="demo-reel">
+        <div class="container">
+            <div class="demo-reel__content">
+                <h2 class="demo-reel__title">Demo Reel</h2>
+                <p class="demo-reel__subtitle">Upload and showcase your latest work</p>
+                
+                <div class="demo-reel__upload-zone" id="uploadZone">
+                    <div class="upload-zone__content">
+                        <div class="upload-zone__icon">📹</div>
+                        <h3>Drop your demo reel here</h3>
+                        <p>or click to browse</p>
+                        <p class="upload-zone__formats">Supports MP4, MOV, AVI • Max 100MB</p>
+                    </div>
+                    <input type="file" id="videoUpload" accept="video/*" class="upload-zone__input">
+                    <div class="upload-progress hidden" id="uploadProgress">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <span class="progress-text">Uploading... 0%</span>
+                    </div>
+                </div>
+
+                <div class="demo-reel__player hidden" id="videoPlayer">
+                    <video controls loop autoplay muted id="demoVideo">
+                        <source src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="player-controls">
+                        <button class="btn btn--secondary btn--sm" id="replaceVideo">Replace Video</button>
+                        <button class="btn btn--outline btn--sm" id="removeVideo">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero__content">
+                <h1 class="hero__title editable" data-field="hero.headline">I'm a Visual Artist & Designer striving to create impactful innovation.</h1>
+                <p class="hero__subtitle editable" data-field="hero.subtitle">Hi! I'm Divyansh. I'm a Digital Marketing Strategist and VFX Artist specializing in 3D Modeling, Visual Effects, and UI/UX Design. I create with precision and drive change through immersive experiences.</p>
+                <div class="hero__cta">
+                    <a href="#projects" class="btn btn--primary">View My Work</a>
+                    <a href="#contact" class="btn btn--outline">Get In Touch</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about__grid">
+                <div class="about__content">
+                    <h2 class="about__title editable" data-field="about.title">Hello! I'm Divyansh.</h2>
+                    <div class="about__text">
+                        <p class="editable" data-field="about.intro">I'm from Chicago, IL, and I am a multidisciplinary creative professional. I hold a Master's degree in Business Data Analytics from National Louis University and a Bachelor's degree in Visual Effects from the Savannah College of Art and Design.</p>
+                        
+                        <h3>I've explored many creative paths</h3>
+                        <p class="editable" data-field="about.journey">I started as a 3D artist and VFX specialist, creating volcanic simulations and architectural visualizations. I then expanded into digital marketing, UI/UX design, and business analytics, discovering that the intersection of creativity and data drives the most impactful innovation.</p>
+                        
+                        <h3>I want to innovate through visual storytelling</h3>
+                        <p class="editable" data-field="about.vision">I aim to create functional, efficient, and memorable experiences that solve real-world problems through the application of cutting-edge technology, design thinking, and data-driven insights.</p>
+                    </div>
+                </div>
+                <div class="about__image">
+                    <div class="image-placeholder">
+                        <span>Professional Photo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="projects__title">Featured Projects</h2>
+            <div class="projects__grid" id="projectsGrid">
+                <!-- Projects will be dynamically generated by JavaScript -->
+            </div>
+            <button class="btn btn--secondary add-project-btn hidden">+ Add New Project</button>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <h2 class="skills__title">Technical Expertise</h2>
+            <div class="skills__grid">
+                <div class="skill-category">
+                    <h3>3D & VFX</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Maya</span>
+                        <span class="skill-tag">Houdini</span>
+                        <span class="skill-tag">Unreal Engine</span>
+                        <span class="skill-tag">ZBrush</span>
+                        <span class="skill-tag">Substance Painter</span>
+                        <span class="skill-tag">Nuke</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Design</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Adobe Creative Suite</span>
+                        <span class="skill-tag">UI/UX Design</span>
+                        <span class="skill-tag">Visual Design</span>
+                        <span class="skill-tag">Motion Graphics</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Marketing</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Digital Marketing</span>
+                        <span class="skill-tag">SEO/SEM</span>
+                        <span class="skill-tag">Content Marketing</span>
+                        <span class="skill-tag">Social Media Marketing</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>Analytics</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">R</span>
+                        <span class="skill-tag">SQL</span>
+                        <span class="skill-tag">Tableau</span>
+                        <span class="skill-tag">Business Intelligence</span>
+                        <span class="skill-tag">Data Analytics</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Creative Corner -->
+    <section id="creative" class="creative-corner">
+        <div class="container">
+            <h2 class="creative-corner__title">Creative Corner</h2>
+            <p class="creative-corner__subtitle">Experimental work, sketches, and personal projects</p>
+            <div class="creative-gallery">
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span>Creative Work #1</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span>Creative Work #2</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span>Creative Work #3</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-placeholder">
+                        <span>Creative Work #4</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn--secondary add-creative-btn hidden">+ Add Creative Work</button>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact__content">
+                <div class="contact__text">
+                    <h2>Want to collaborate?</h2>
+                    <p>Let's create something amazing together</p>
+                </div>
+                <div class="contact__form">
+                    <form id="contactForm" novalidate>
+                        <div class="form-group">
+                            <label for="contactName" class="form-label">Name</label>
+                            <input type="text" id="contactName" class="form-control" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmail" class="form-label">Email</label>
+                            <input type="email" id="contactEmail" class="form-control" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactProjectType" class="form-label">Project Type</label>
+                            <select id="contactProjectType" class="form-control" name="projectType" required>
+                                <option value="">Select a project type</option>
+                                <option value="vfx">VFX & 3D Work</option>
+                                <option value="design">Design & Branding</option>
+                                <option value="marketing">Digital Marketing</option>
+                                <option value="analytics">Data Analytics</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="contactMessage" class="form-label">Message</label>
+                            <textarea id="contactMessage" class="form-control" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full-width">Send Message</button>
+                    </form>
+                </div>
+                <div class="contact__info">
+                    <div class="contact-item">
+                        <strong>Email:</strong>
+                        <a href="mailto:divyanshv1911@gmail.com">divyanshv1911@gmail.com</a>
+                    </div>
+                    <div class="contact-item">
+                        <strong>Phone:</strong>
+                        <a href="tel:+19124413829">+1 (912) 441-3829</a>
+                    </div>
+                    <div class="contact-item">
+                        <strong>Location:</strong>
+                        <span>Chicago, IL</span>
+                    </div>
+                    <div class="contact-item">
+                        <strong>LinkedIn:</strong>
+                        <a href="https://www.linkedin.com/in/divyansh-verma-analytics" target="_blank">View Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Modal -->
+    <div class="modal hidden" id="projectModal">
+        <div class="modal__overlay"></div>
+        <div class="modal__content">
+            <button class="modal__close">&times;</button>
+            <div class="modal__body" id="modalBody">
+                <!-- Project details will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
