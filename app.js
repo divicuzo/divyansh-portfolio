@@ -1,602 +1,556 @@
-// Application Data
-const appData = {
-  personal_info: {
-    name: "Divyansh Verma",
-    location: "Chicago, IL",
-    phone: "+1(912)441-3829",
-    email: "divyanshv1911@gmail.com",
-    linkedin: "https://www.linkedin.com/in/divyansh-verma-analytics"
-  },
-  hero: {
-    headline: "I'm a Visual Artist & Designer striving to create impactful innovation.",
-    subtitle: "Hi! I'm Divyansh. I'm a Digital Marketing Strategist and VFX Artist specializing in 3D Modeling, Visual Effects, and UI/UX Design. I create with precision and drive change through immersive experiences."
+// app.js
+import { openDB, putBlob, getBlob, deleteBlob, loadStruct, saveStruct, exportJSON, importJSON } from './storage.js';
+import { setupDropzone, simulateProgress, uploadToCloud } from './uploader.js';
+
+const MAX_LOCAL_VIDEO = 2 * 1024 * 1024 * 1024; // 2GB (client-side guard)
+
+const defaultState = {
+  personal: {
+    name: 'Divyansh Verma',
+    email: 'divyanshv1911@gmail.com',
+    phone: '+1(912)441-3829',
+    location: 'Chicago, IL',
+    linkedin: 'https://www.linkedin.com/in/divyansh-verma-analytics'
   },
   about: {
-    title: "Hello! I'm Divyansh.",
-    intro: "I'm from Chicago, IL, and I am a multidisciplinary creative professional. I hold a Master's degree in Business Data Analytics from National Louis University and a Bachelor's degree in Visual Effects from the Savannah College of Art and Design.",
-    journey: "I started as a 3D artist and VFX specialist, creating volcanic simulations and architectural visualizations. I then expanded into digital marketing, UI/UX design, and business analytics, discovering that the intersection of creativity and data drives the most impactful innovation.",
-    vision: "I aim to create functional, efficient, and memorable experiences that solve real-world problems through the application of cutting-edge technology, design thinking, and data-driven insights."
+    intro: "I'm a multidisciplinary creative professional...",
+    journey: "From VFX and 3D to digital marketing and analytics...",
+    vision: "I create functional, efficient, and memorable experiences..."
   },
-  projects: [
-    {
-      id: "01",
-      title: "Inactivity Through Ages",
-      subtitle: "VFX Short Film",
-      timeline: "5 Months | Personal Project",
-      date: "January 2021 - May 2021",
-      summary: "Developed complete 3D environmental recreation of Mount Sinabung volcano using Maya, creating 200+ detailed geological assets with complex PYRO simulations for volcanic eruption sequences.",
-      roles: "3D Artist, VFX Supervisor, Lighting Artist",
-      tools: ["Maya", "Houdini", "Substance Painter"],
-      details: "Engineered complex PYRO simulations for volcanic eruption sequences in Houdini, achieving photorealistic destruction effects. Executed advanced lighting and look development in Substance Painter, creating realistic material shaders and textures. Managed end-to-end VFX pipeline from pre-visualization to final compositing, delivering project 15% under budget."
-    },
-    {
-      id: "02", 
-      title: "Diagem Digital Presence",
-      subtitle: "Brand & Marketing Design",
-      timeline: "3+ Years | Current Role",
-      date: "November 2021 - Current",
-      summary: "Leading comprehensive digital marketing and design strategy for luxury jewelry brand, managing product sample logistics and customer acquisition processes across multiple channels.",
-      roles: "Design Lead, Sales Manager, Brand Strategist",
-      tools: ["Adobe Creative Suite", "Social Media Platforms"],
-      details: "Created high-quality graphic content for digital marketing channels including websites, social media platforms, and promotional materials. Enhanced brand visibility through strategic content marketing and social media marketing initiatives."
-    },
-    {
-      id: "03",
-      title: "REMAX Architectural Visualization",
-      subtitle: "3D Real Estate Solutions", 
-      timeline: "6 Months | Freelance Project",
-      date: "December 2016 - May 2017",
-      summary: "Created immersive 3D architectural visualizations and virtual environments for 15+ real estate projects, increasing property viewing engagement by 45% through interactive virtual tours.",
-      roles: "3D Designer, Virtual Tour Developer",
-      tools: ["Maya", "Unreal Engine", "3D Modeling"],
-      details: "Developed interactive virtual tours and real-time rendering solutions. Collaborated with architects and interior designers on spatial design concepts and 3D space generation."
-    },
-    {
-      id: "04",
-      title: "Restaurant Operations Optimization",
-      subtitle: "Management & Analytics",
-      timeline: "11 Months | Management Role", 
-      date: "December 2019 - October 2020",
-      summary: "Managed daily operations for Savannah's #1-rated seafood restaurant, implementing CRM systems and data-driven strategies that increased customer retention by 30%.",
-      roles: "Assistant Manager, Operations Specialist, Data Analyst",
-      tools: ["CRM Systems", "Data Analytics", "Staff Management"],
-      details: "Implemented customer relationship management systems and developed staff training programs that reduced employee turnover by 20% while optimizing costs by 15%."
-    },
-    {
-      id: "05",
-      title: "West Elm Visual Merchandising",
-      subtitle: "Retail Design & Strategy",
-      timeline: "10 Months | Part-time Role",
-      date: "September 2018 - June 2019", 
-      summary: "Enhanced store display strategies and visual merchandising, resulting in 20% boost in overall sales through targeted promotional campaigns and advanced CRM techniques.",
-      roles: "Visual Merchandiser, Sales Analyst, Customer Relations",
-      tools: ["Visual Design", "CRM Systems", "Sales Analytics"],
-      details: "Implemented advanced CRM techniques and analyzed sales data to optimize inventory management, achieving 25% reduction in stock discrepancies."
-    },
-    {
-      id: "06",
-      title: "Business Data Analytics",
-      subtitle: "Academic Research & Projects",
-      timeline: "2 Years | Master's Program",
-      date: "September 2022 - June 2024",
-      summary: "Completed comprehensive Master's program focusing on data-driven decision making, statistical analysis, and business intelligence solutions across various industries.",
-      roles: "Data Analyst, Research Lead, Business Intelligence Developer", 
-      tools: ["Python", "R", "SQL", "Tableau", "Business Intelligence"],
-      details: "Developed advanced analytical skills and created data-driven solutions for business challenges, focusing on ROI optimization and performance measurement."
-    }
-  ]
+  media: {
+    demoVideoKey: null,     // IndexedDB key for blob
+    demoVideoURL: '',       // optional remote URL
+    profileKey: null
+  },
+  projects: [],
+  creative: [],
+  skills: {
+    '3D & VFX': ['Maya', 'Houdini', 'Unreal Engine', 'ZBrush', 'Substance Painter', 'Nuke'],
+    Design: ['Adobe Creative Suite', 'UI/UX Design', 'Visual Design', 'Motion Graphics'],
+    Marketing: ['Digital Marketing', 'SEO/SEM', 'Content Marketing', 'Social Media Marketing'],
+    Analytics: ['Python', 'R', 'SQL', 'Tableau', 'Business Intelligence', 'Data Analytics']
+  }
 };
 
-// State Management
+let state = loadStruct() || defaultState;
 let editMode = false;
-let currentVideoFile = null;
 
-// DOM Elements - Initialize after DOM loads
-let uploadZone, videoUpload, uploadProgress, videoPlayer, demoVideo;
-let projectsGrid, projectModal, modalBody, contactForm, editToggle;
+const qs = sel => document.querySelector(sel);
+const qsa = sel => Array.from(document.querySelectorAll(sel));
 
-// Initialize Application
-document.addEventListener('DOMContentLoaded', function() {
-  // Initialize DOM elements
-  uploadZone = document.getElementById('uploadZone');
-  videoUpload = document.getElementById('videoUpload');
-  uploadProgress = document.getElementById('uploadProgress');
-  videoPlayer = document.getElementById('videoPlayer');
-  demoVideo = document.getElementById('demoVideo');
-  projectsGrid = document.getElementById('projectsGrid');
-  projectModal = document.getElementById('projectModal');
-  modalBody = document.getElementById('modalBody');
-  contactForm = document.getElementById('contactForm');
-  editToggle = document.querySelector('.edit-toggle');
+init();
 
-  // Initialize functionality
-  initializeNavigation();
-  initializeDemoReel();
+async function init(){
+  await openDB();
+  wireHeader();
+  renderStaticBindings();
+  renderDemo();
   renderProjects();
-  initializeEditMode();
-  initializeContactForm();
-  initializeModal();
-  initializeScrollAnimations();
-});
+  renderCreative();
+  renderSkills();
+  wireAbout();
+  wireContact();
+  wireBackup();
+}
 
-// Navigation Functions
-function initializeNavigation() {
-  // Smooth scroll for navigation links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      const targetId = this.getAttribute('href');
-      const target = document.querySelector(targetId);
-      
-      if (target) {
-        const headerHeight = document.querySelector('.header').offsetHeight;
-        const targetPosition = target.offsetTop - headerHeight - 10;
-        
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
-      }
-    });
+/* Header, Edit Mode */
+function wireHeader(){
+  const nav = document.querySelector('.nav');
+  const toggle = document.querySelector('.nav__toggle');
+  toggle.addEventListener('click', ()=>{
+    const expanded = nav.getAttribute('aria-expanded') === 'true';
+    nav.setAttribute('aria-expanded', !expanded);
+    toggle.setAttribute('aria-expanded', !expanded);
   });
 
-  // Mobile navigation toggle
-  const navToggle = document.querySelector('.nav__toggle');
-  const navList = document.querySelector('.nav__list');
-  
-  if (navToggle && navList) {
-    navToggle.addEventListener('click', function(e) {
-      e.stopPropagation();
-      navList.classList.toggle('show');
-    });
-  }
-
-  // Close mobile menu when clicking on a link
-  document.querySelectorAll('.nav__link').forEach(link => {
-    link.addEventListener('click', function() {
-      if (navList) {
-        navList.classList.remove('show');
-      }
-    });
-  });
-
-  // Close mobile menu when clicking outside
-  document.addEventListener('click', function(e) {
-    if (navList && !e.target.closest('.header__nav')) {
-      navList.classList.remove('show');
-    }
-  });
-}
-
-// Demo Reel Functions
-function initializeDemoReel() {
-  if (!uploadZone || !videoUpload) return;
-
-  const uploadZoneContent = uploadZone.querySelector('.upload-zone__content');
-  
-  // File upload handling
-  videoUpload.addEventListener('change', handleFileUpload);
-  
-  // Drag and drop functionality
-  if (uploadZoneContent) {
-    uploadZoneContent.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      this.classList.add('dragover');
-    });
-    
-    uploadZoneContent.addEventListener('dragleave', function(e) {
-      e.preventDefault();
-      this.classList.remove('dragover');
-    });
-    
-    uploadZoneContent.addEventListener('drop', function(e) {
-      e.preventDefault();
-      this.classList.remove('dragover');
-      
-      const files = e.dataTransfer.files;
-      if (files.length > 0) {
-        handleFileUpload({ target: { files: files } });
-      }
-    });
-
-    // Click to browse
-    uploadZoneContent.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      videoUpload.click();
-    });
-  }
-
-  // Player controls
-  const replaceBtn = document.getElementById('replaceVideo');
-  const removeBtn = document.getElementById('removeVideo');
-  
-  if (replaceBtn) {
-    replaceBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      showUploadZone();
-    });
-  }
-
-  if (removeBtn) {
-    removeBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      removeVideo();
-    });
-  }
-}
-
-function handleFileUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  // Validate file type
-  if (!file.type.startsWith('video/')) {
-    alert('Please upload a video file.');
-    return;
-  }
-
-  // Validate file size (100MB limit)
-  if (file.size > 100 * 1024 * 1024) {
-    alert('File size must be less than 100MB.');
-    return;
-  }
-
-  currentVideoFile = file;
-  showUploadProgress();
-  simulateUpload(file);
-}
-
-function showUploadProgress() {
-  if (uploadZone) uploadZone.style.display = 'none';
-  if (uploadProgress) uploadProgress.classList.remove('hidden');
-}
-
-function simulateUpload(file) {
-  const progressFill = document.querySelector('.progress-fill');
-  const progressText = document.querySelector('.progress-text');
-  
-  if (!progressFill || !progressText) return;
-  
-  let progress = 0;
-  const interval = setInterval(() => {
-    progress += Math.random() * 15;
-    if (progress >= 100) {
-      progress = 100;
-      clearInterval(interval);
-      showVideoPlayer(file);
-    }
-    
-    progressFill.style.width = progress + '%';
-    progressText.textContent = `Uploading... ${Math.round(progress)}%`;
-  }, 200);
-}
-
-function showVideoPlayer(file) {
-  if (!demoVideo) return;
-  
-  const videoURL = URL.createObjectURL(file);
-  demoVideo.src = videoURL;
-  
-  if (uploadProgress) uploadProgress.classList.add('hidden');
-  if (videoPlayer) videoPlayer.classList.remove('hidden');
-}
-
-function showUploadZone() {
-  if (uploadZone) uploadZone.style.display = 'block';
-  if (videoPlayer) videoPlayer.classList.add('hidden');
-  if (uploadProgress) uploadProgress.classList.add('hidden');
-  
-  // Clear the file input
-  if (videoUpload) videoUpload.value = '';
-  currentVideoFile = null;
-}
-
-function removeVideo() {
-  if (demoVideo && demoVideo.src) {
-    URL.revokeObjectURL(demoVideo.src);
-  }
-  showUploadZone();
-}
-
-// Projects Functions
-function renderProjects() {
-  if (!projectsGrid) return;
-  
-  projectsGrid.innerHTML = '';
-  
-  appData.projects.forEach(project => {
-    const projectCard = createProjectCard(project);
-    projectsGrid.appendChild(projectCard);
-  });
-}
-
-function createProjectCard(project) {
-  const card = document.createElement('div');
-  card.className = 'project-card';
-  
-  // Make entire card clickable
-  card.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    openProjectModal(project);
-  });
-  
-  card.innerHTML = `
-    <div class="project-card__header">
-      <div class="project-number">${project.id}</div>
-      <div class="project-info">
-        <h3 class="project-title">${project.title}</h3>
-        <p class="project-subtitle">${project.subtitle}</p>
-        <p class="project-timeline">${project.timeline}</p>
-      </div>
-    </div>
-    <p class="project-summary">${project.summary}</p>
-    <div class="project-roles">
-      <h4>My Roles</h4>
-      <p>${project.roles}</p>
-    </div>
-    <div class="project-cta">View Project</div>
-  `;
-  
-  return card;
-}
-
-// Modal Functions
-function initializeModal() {
-  if (!projectModal) return;
-  
-  const modalOverlay = projectModal.querySelector('.modal__overlay');
-  const modalClose = projectModal.querySelector('.modal__close');
-  
-  if (modalOverlay) {
-    modalOverlay.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      closeProjectModal();
-    });
-  }
-  
-  if (modalClose) {
-    modalClose.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      closeProjectModal();
-    });
-  }
-  
-  // Close modal on escape key
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && projectModal && !projectModal.classList.contains('hidden')) {
-      closeProjectModal();
-    }
-  });
-}
-
-function openProjectModal(project) {
-  if (!projectModal || !modalBody) return;
-  
-  modalBody.innerHTML = `
-    <div class="modal-project__header">
-      <div class="modal-project__number">${project.id}</div>
-      <h2 class="modal-project__title">${project.title}</h2>
-      <p class="modal-project__subtitle">${project.subtitle}</p>
-      <p class="modal-project__timeline">${project.timeline}</p>
-    </div>
-    
-    <div class="modal-project__section">
-      <h3>Project Overview</h3>
-      <p>${project.summary}</p>
-    </div>
-    
-    <div class="modal-project__section">
-      <h3>My Roles</h3>
-      <p>${project.roles}</p>
-    </div>
-    
-    <div class="modal-project__section">
-      <h3>Tools Used</h3>
-      <div class="modal-project__tools">
-        ${project.tools.map(tool => `<span class="modal-project__tool">${tool}</span>`).join('')}
-      </div>
-    </div>
-    
-    <div class="modal-project__section">
-      <h3>Project Details</h3>
-      <p>${project.details}</p>
-    </div>
-    
-    <div class="modal-project__section">
-      <h3>Timeline</h3>
-      <p>${project.date}</p>
-    </div>
-  `;
-  
-  projectModal.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeProjectModal() {
-  if (!projectModal) return;
-  
-  projectModal.classList.add('hidden');
-  document.body.style.overflow = 'auto';
-}
-
-// Edit Mode Functions
-function initializeEditMode() {
-  if (!editToggle) return;
-  
-  editToggle.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    
+  qs('#editToggle').addEventListener('click', ()=>{
     editMode = !editMode;
-    document.body.classList.toggle('edit-mode', editMode);
-    this.textContent = editMode ? 'Exit Edit' : 'Edit Mode';
-    this.className = editMode ? 'btn btn--primary btn--sm edit-toggle' : 'btn btn--secondary btn--sm edit-toggle';
-    
-    if (editMode) {
-      enableEditMode();
-    } else {
-      disableEditMode();
+    document.body.classList.toggle('is-edit', editMode);
+    qs('#editToggle').textContent = editMode ? 'Editing…' : 'Edit Mode';
+  });
+}
+
+function renderStaticBindings(){
+  // Bind editable text fields with data-editable attributes
+  qsa('[data-editable]').forEach(el=>{
+    el.contentEditable = false;
+    el.addEventListener('input', ()=>{
+      const path = el.getAttribute('data-editable').split('.');
+      setDeep(state, path, el.textContent.trim());
+      saveStruct(state);
+      hydrateDependent(path);
+    });
+    el.addEventListener('focus', ()=> { if(!editMode) el.blur(); });
+  });
+  // Hydrate initial content
+  setEditable('personal.name', state.personal.name);
+  setEditable('personal.email', state.personal.email);
+  setEditable('personal.phone', state.personal.phone);
+  setEditable('personal.location', state.personal.location);
+  setEditable('about.intro', state.about.intro);
+  setEditable('about.journey', state.about.journey);
+  setEditable('about.vision', state.about.vision);
+
+  // LinkedIn
+  const link = qs('#linkedinLink');
+  link.href = state.personal.linkedin || '#';
+}
+
+/* Demo Reel */
+function renderDemo(){
+  const videoEl = qs('#demoVideo');
+  applyDemoSource(videoEl);
+
+  const dz = qs('#demoDropzone');
+  const browse = qs('#demoBrowse');
+  const input = qs('#demoFile');
+  const progress = qs('#demoProgress');
+  const bar = qs('#demoProgressBar');
+
+  browse.addEventListener('click', ()=> input.click());
+
+  setupDropzone(dz, {
+    accept: 'video/*',
+    multiple: false,
+    progressEl: progress,
+    onFiles: async (files)=>{
+      const file = files[0];
+      if (!file) return;
+      if (file.size > MAX_LOCAL_VIDEO){
+        alert('This file exceeds 2GB. Use Cloud Upload instead.');
+        return;
+      }
+      await putBlob('demoVideo', file);
+      state.media.demoVideoKey = 'demoVideo';
+      state.media.demoVideoURL = ''; // prefer local
+      saveStruct(state);
+      await simulateProgress(file.size, progress);
+      applyDemoSource(videoEl);
     }
   });
-}
 
-function enableEditMode() {
-  // Make text editable
-  document.querySelectorAll('.editable').forEach(element => {
-    element.contentEditable = true;
-    element.addEventListener('blur', saveEditableContent);
-    element.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        this.blur();
-      }
-    });
-    
-    // Prevent default click behavior during edit
-    element.addEventListener('click', function(e) {
-      if (editMode) {
-        e.stopPropagation();
-      }
-    });
-  });
-
-  // Show add buttons
-  document.querySelectorAll('.add-project-btn, .add-creative-btn').forEach(btn => {
-    btn.classList.remove('hidden');
-  });
-}
-
-function disableEditMode() {
-  document.querySelectorAll('.editable').forEach(element => {
-    element.contentEditable = false;
-    element.removeEventListener('blur', saveEditableContent);
-  });
-
-  document.querySelectorAll('.add-project-btn, .add-creative-btn').forEach(btn => {
-    btn.classList.add('hidden');
-  });
-}
-
-function saveEditableContent(event) {
-  const field = event.target.dataset.field;
-  const value = event.target.textContent.trim();
-  
-  if (field) {
-    // Update the data object
-    const keys = field.split('.');
-    let obj = appData;
-    for (let i = 0; i < keys.length - 1; i++) {
-      obj = obj[keys[i]];
+  // Cloud Upload UI
+  qs('#cloudUploadButton').addEventListener('click', async ()=>{
+    const endpoint = qs('#cloudEndpoint').value.trim();
+    const token = qs('#cloudToken').value.trim();
+    const f = input.files?.;
+    if (!f){ alert('Choose a file first.'); return; }
+    try{
+      let lastPct = 0;
+      await uploadToCloud({
+        endpoint, token, file:f, onProgress: (pct)=>{
+          lastPct = pct;
+          bar.style.width = pct+'%';
+          progress.hidden = false;
+        }
+      });
+      setTimeout(()=>{ progress.hidden = true; bar.style.width = '0%'; }, 700);
+      alert('Uploaded to cloud. Paste the CDN URL below and click "Use URL".');
+    }catch(err){
+      alert('Cloud upload failed: '+err.message);
     }
-    obj[keys[keys.length - 1]] = value;
-    
-    console.log(`Updated ${field}:`, value);
+  });
+
+  qs('#useDemoURL').addEventListener('click', ()=>{
+    const url = qs('#demoURL').value.trim();
+    if (!url) return;
+    state.media.demoVideoURL = url;
+    saveStruct(state);
+    applyDemoSource(videoEl);
+  });
+}
+
+async function applyDemoSource(videoEl){
+  videoEl.removeAttribute('src');
+  videoEl.load();
+
+  if (state.media.demoVideoURL){
+    videoEl.src = state.media.demoVideoURL;
+    videoEl.load();
+    return;
+  }
+  if (state.media.demoVideoKey){
+    const blob = await getBlob(state.media.demoVideoKey);
+    if (blob){
+      const url = URL.createObjectURL(blob);
+      videoEl.src = url;
+      videoEl.load();
+    }
   }
 }
 
-// Contact Form Functions
-function initializeContactForm() {
-  if (!contactForm) return;
-  
-  contactForm.addEventListener('submit', function(e) {
+/* Projects */
+function renderProjects(){
+  const list = qs('#projectList');
+  list.innerHTML = '';
+  state.projects.forEach((p, idx)=>{
+    const li = document.createElement('li');
+    li.className = 'project-card';
+    li.draggable = true;
+    li.dataset.index = idx;
+
+    const img = document.createElement('img');
+    img.className = 'project-card__thumb';
+    if (p.coverKey) {
+      getBlob(p.coverKey).then(b=>{
+        if (b) img.src = URL.createObjectURL(b);
+      });
+    }
+
+    const body = document.createElement('div');
+    body.className = 'project-card__body';
+    body.innerHTML = `
+      <div class="project-card__meta">${p.timeline || ''}</div>
+      <div class="project-card__title">${escapeHTML(p.title || 'Untitled')}</div>
+      <div class="project-card__subtitle muted">${escapeHTML(p.subtitle || '')}</div>
+      <div class="project-card__summary">${escapeHTML(p.summary || '')}</div>
+      <div class="project-card__actions">
+        <button class="btn btn--ghost btn--sm edit">Edit</button>
+        <button class="btn btn--ghost btn--sm view">View</button>
+      </div>
+    `;
+    li.appendChild(img);
+    li.appendChild(body);
+    list.appendChild(li);
+
+    // Edit handler
+    body.querySelector('.edit').addEventListener('click', ()=> openProjectModal(idx));
+    body.querySelector('.view').addEventListener('click', ()=> openProjectModal(idx, true));
+
+    // Drag reorder
+    li.addEventListener('dragstart', e=>{
+      e.dataTransfer.setData('text/plain', idx.toString());
+      li.classList.add('dragging');
+    });
+    li.addEventListener('dragend', ()=> li.classList.remove('dragging'));
+    li.addEventListener('dragover', e=>{
+      e.preventDefault();
+      const dragging = list.querySelector('.dragging');
+      const after = getDragAfterElement(list, e.clientY);
+      if (after == null){
+        list.appendChild(dragging);
+      } else {
+        list.insertBefore(dragging, after);
+      }
+    });
+    li.addEventListener('drop', ()=>{
+      const order = Array.from(list.querySelectorAll('.project-card')).map(el=> +el.dataset.index);
+      const newOrder = Array.from(new Set(order)); // robust
+      state.projects = newOrder.map(i=> state.projects[i]);
+      saveStruct(state);
+      renderProjects();
+    });
+  });
+
+  qs('#addProject').onclick = ()=> openProjectModal(null);
+}
+
+function getDragAfterElement(container, y){
+  const cards = [...container.querySelectorAll('.project-card:not(.dragging)')];
+  return cards.reduce((closest, child)=>{
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height/2;
+    if (offset < 0 && offset > closest.offset){
+      return { offset, element: child };
+    } else return closest;
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function openProjectModal(index, readOnly=false){
+  const modal = qs('#projectModal');
+  const form = qs('#projectForm');
+  const delBtn = qs('#deleteProject');
+  const title = qs('#projectModalTitle');
+
+  let proj = index!=null ? {...state.projects[index]} : {
+    title:'', subtitle:'', timeline:'', roles:'', tools:'', summary:'', details:'',
+    coverKey:null, galleryKeys:[]
+  };
+
+  title.textContent = index!=null ? 'Edit Project' : 'Add Project';
+  form.title.value = proj.title;
+  form.subtitle.value = proj.subtitle;
+  form.timeline.value = proj.timeline;
+  form.roles.value = Array.isArray(proj.roles) ? proj.roles.join(', ') : (proj.roles || '');
+  form.tools.value = Array.isArray(proj.tools) ? proj.tools.join(', ') : (proj.tools || '');
+  form.summary.value = proj.summary;
+  form.details.value = proj.details;
+
+  // Cover
+  const coverImg = qs('#coverPreview');
+  coverImg.src = '';
+  if (proj.coverKey){
+    getBlob(proj.coverKey).then(b=> b && (coverImg.src = URL.createObjectURL(b)));
+  }
+
+  // Gallery
+  const galleryWrap = qs('#galleryPreview');
+  galleryWrap.innerHTML = '';
+  if (proj.galleryKeys?.length){
+    proj.galleryKeys.forEach(async key=>{
+      const b = await getBlob(key);
+      if (!b) return;
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(b);
+      galleryWrap.appendChild(img);
+    });
+  }
+
+  // Dropzones
+  setupDropzone(qs('#coverDrop'), {
+    accept: 'image/*',
+    onFiles: async files=>{
+      const f = files[0]; if (!f) return;
+      const key = `project-cover-${Date.now()}`;
+      await putBlob(key, f);
+      // cleanup old
+      if (proj.coverKey && proj.coverKey!==key) await deleteBlob(proj.coverKey);
+      proj.coverKey = key;
+      const b = await getBlob(key);
+      coverImg.src = URL.createObjectURL(b);
+    }
+  });
+  setupDropzone(qs('#galleryDrop'), {
+    accept: 'image/*',
+    multiple: true,
+    onFiles: async files=>{
+      for (const f of files){
+        const key = `project-gallery-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        await putBlob(key, f);
+        proj.galleryKeys.push(key);
+        const b = await getBlob(key);
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(b);
+        galleryWrap.appendChild(img);
+      }
+    }
+  });
+  qs('#coverBrowse').onclick = ()=> qs('#coverDrop input[type=file]').click();
+  qs('#galleryBrowse').onclick = ()=> qs('#galleryDrop input[type=file]').click();
+
+  delBtn.style.visibility = index!=null ? 'visible' : 'hidden';
+  delBtn.onclick = ()=>{
+    if (index==null) return;
+    if (!confirm('Delete this project?')) return;
+    // clean blobs (optional to keep cache)
+    if (proj.coverKey) deleteBlob(proj.coverKey);
+    proj.galleryKeys?.forEach(k=> deleteBlob(k));
+    state.projects.splice(index,1);
+    saveStruct(state);
+    modal.close();
+    renderProjects();
+  };
+
+  form.onsubmit = e=>{
     e.preventDefault();
-    e.stopPropagation();
-    
-    const formData = new FormData(this);
-    const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      projectType: formData.get('projectType'),
-      message: formData.get('message')
-    };
-    
-    // Validate required fields
-    if (!data.name || !data.email || !data.projectType || !data.message) {
-      alert('Please fill in all required fields.');
-      return;
+    proj.title    = form.title.value.trim();
+    proj.subtitle = form.subtitle.value.trim();
+    proj.timeline = form.timeline.value.trim();
+    proj.roles    = form.roles.value.split(',').map(s=>s.trim()).filter(Boolean);
+    proj.tools    = form.tools.value.split(',').map(s=>s.trim()).filter(Boolean);
+    proj.summary  = form.summary.value.trim();
+    proj.details  = form.details.value.trim();
+
+    if (index!=null) state.projects[index] = proj;
+    else state.projects.push(proj);
+
+    saveStruct(state);
+    modal.close();
+    renderProjects();
+  };
+
+  modal.showModal();
+}
+
+/* Creative Corner */
+function renderCreative(){
+  const list = qs('#creativeList');
+  list.innerHTML = '';
+  state.creative.forEach((item, idx)=>{
+    const li = document.createElement('li');
+    li.className = 'creative-card';
+
+    const mediaWrap = document.createElement(item.type==='video' ? 'video' : 'img');
+    if (item.type==='video'){
+      mediaWrap.controls = true; mediaWrap.playsinline = true; mediaWrap.muted = true;
     }
-    
-    // Simulate form submission
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    
-    submitBtn.textContent = 'Sending...';
-    submitBtn.disabled = true;
-    
-    setTimeout(() => {
-      alert('Thank you for your message! I\'ll get back to you soon.');
-      this.reset();
-      submitBtn.textContent = originalText;
-      submitBtn.disabled = false;
-    }, 1500);
+    if (item.key){
+      getBlob(item.key).then(b=>{
+        if (b) mediaWrap.src = URL.createObjectURL(b);
+      });
+    }
+
+    const body = document.createElement('div');
+    body.className = 'creative-card__body';
+    body.innerHTML = `
+      <div class="muted">${new Date(item.createdAt||Date.now()).toLocaleDateString()}</div>
+      <div>${escapeHTML(item.caption||'')}</div>
+      <div style="margin-top:8px; display:flex; gap:8px;">
+        <button class="btn btn--ghost btn--sm edit">Edit</button>
+        <button class="btn btn--danger btn--sm delete">Delete</button>
+      </div>
+    `;
+
+    body.querySelector('.edit').onclick = ()=> openCreativeModal(idx);
+    body.querySelector('.delete').onclick = ()=>{
+      if (!confirm('Delete this post?')) return;
+      if (item.key) deleteBlob(item.key);
+      state.creative.splice(idx,1);
+      saveStruct(state);
+      renderCreative();
+    };
+
+    li.appendChild(mediaWrap);
+    li.appendChild(body);
+    list.appendChild(li);
+  });
+
+  qs('#addCreative').onclick = ()=> openCreativeModal(null);
+}
+
+function openCreativeModal(index){
+  const modal = qs('#creativeModal');
+  const form = qs('#creativeForm');
+  const imgPrev = qs('#creativeImagePreview');
+  const vidPrev = qs('#creativeVideoPreview');
+  const delBtn = qs('#deleteCreative');
+
+  let item = index!=null ? {...state.creative[index]} : { type:'image', caption:'', key:null, createdAt: Date.now() };
+
+  // Reset previews
+  imgPrev.src = ''; imgPrev.hidden = false;
+  vidPrev.src = ''; vidPrev.hidden = true;
+
+  form.caption.value = item.caption || '';
+
+  // Dropzone
+  setupDropzone(qs('#creativeDrop'), {
+    accept: 'image/*,video/*',
+    onFiles: async files=>{
+      const f = files[0]; if (!f) return;
+      const key = `creative-${Date.now()}`;
+      await putBlob(key, f);
+      if (item.key && item.key!==key) await deleteBlob(item.key);
+      item.key = key;
+      item.type = f.type.startsWith('video') ? 'video' : 'image';
+      const b = await getBlob(key);
+      const url = URL.createObjectURL(b);
+      if (item.type==='video'){ vidPrev.src = url; vidPrev.hidden=false; imgPrev.hidden=true; }
+      else { imgPrev.src = url; imgPrev.hidden=false; vidPrev.hidden=true; }
+    }
+  });
+  qs('#creativeBrowse').onclick = ()=> qs('#creativeDrop input[type=file]').click();
+
+  delBtn.style.visibility = index!=null ? 'visible' : 'hidden';
+  delBtn.onclick = ()=>{
+    if (index==null) return;
+    if (!confirm('Delete this post?')) return;
+    if (item.key) deleteBlob(item.key);
+    state.creative.splice(index,1);
+    saveStruct(state);
+    modal.close();
+    renderCreative();
+  };
+
+  form.onsubmit = e=>{
+    e.preventDefault();
+    item.caption = form.caption.value.trim();
+    if (index!=null) state.creative[index] = item;
+    else state.creative.unshift(item); // newest first
+    saveStruct(state);
+    modal.close();
+    renderCreative();
+  };
+
+  modal.showModal();
+}
+
+/* Skills */
+function renderSkills(){
+  const wrap = qs('#skillsWrap');
+  wrap.innerHTML = '';
+  for (const [cat, items] of Object.entries(state.skills)){
+    const card = document.createElement('div');
+    card.className = 'skill-card';
+    card.innerHTML = `<h4>${escapeHTML(cat)}</h4><div class="muted">${items.map(escapeHTML).join(' • ')}</div>`;
+    wrap.appendChild(card);
+  }
+}
+
+/* About/Profile */
+function wireAbout(){
+  setupDropzone(qs('#profileDrop'), {
+    accept: 'image/*',
+    onFiles: async files=>{
+      const f = files; if (!f) return;
+      const key = `profile-${Date.now()}`;
+      await putBlob(key, f);
+      if (state.media.profileKey && state.media.profileKey!==key) await deleteBlob(state.media.profileKey);
+      state.media.profileKey = key;
+      saveStruct(state);
+      hydrateProfile();
+    }
+  });
+  qs('#profileBrowse').onclick = ()=> qs('#profileDrop input[type=file]').click();
+  hydrateProfile();
+}
+
+async function hydrateProfile(){
+  const img = qs('#profileImage');
+  img.src = '';
+  if (state.media.profileKey){
+    const b = await getBlob(state.media.profileKey);
+    if (b) img.src = URL.createObjectURL(b);
+  }
+}
+
+/* Contact */
+function wireContact(){
+  // keep LinkedIn link synced if edited through JSON later
+  const link = qs('#linkedinLink');
+  link.href = state.personal.linkedin || '#';
+}
+
+/* Backup */
+function wireBackup(){
+  qs('#exportData').onclick = ()=> exportJSON();
+  qs('#importData').addEventListener('change', async (e)=>{
+    const file = e.target.files?.;
+    if (!file) return;
+    await importJSON(file);
+    state = loadStruct() || defaultState;
+    // re-render everything
+    renderStaticBindings();
+    renderDemo();
+    renderProjects();
+    renderCreative();
+    renderSkills();
+    hydrateProfile();
+    alert('Imported content.');
   });
 }
 
-// Add scroll-based animations
-function initializeScrollAnimations() {
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  };
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-      }
-    });
-  }, observerOptions);
-  
-  // Observe project cards and other elements
-  setTimeout(() => {
-    document.querySelectorAll('.project-card, .skill-category, .gallery-item').forEach(el => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(20px)';
-      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-      observer.observe(el);
-    });
-  }, 100);
+/* Helpers */
+function setEditable(path, value){
+  const el = qs(`[data-editable="${path}"]`);
+  if (el) el.textContent = value || '';
 }
-
-// Utility Functions
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
+function setDeep(obj, pathArr, value){
+  let ref = obj;
+  for (let i=0;i<pathArr.length-1;i++){
+    const k = pathArr[i];
+    if (!(k in ref)) ref[k] = {};
+    ref = ref[k];
+  }
+  ref[pathArr[pathArr.length-1]] = value;
+  saveStruct(state);
 }
-
-// Handle window resize for responsive features
-window.addEventListener('resize', debounce(function() {
-  const navList = document.querySelector('.nav__list');
-  if (navList && window.innerWidth > 768) {
-    navList.classList.remove('show');
+function hydrateDependent(path){
+  if (path==='personal' && path[1]==='linkedin'){
+    const link = qs('#linkedinLink');
+    link.href = state.personal.linkedin || '#';
   }
-}, 250));
-
-// Export functions for potential external use
-window.PortfolioApp = {
-  openProject: openProjectModal,
-  closeProject: closeProjectModal,
-  toggleEditMode: () => editToggle && editToggle.click(),
-  addProject: (projectData) => {
-    appData.projects.push(projectData);
-    renderProjects();
-  },
-  removeProject: (projectId) => {
-    appData.projects = appData.projects.filter(p => p.id !== projectId);
-    renderProjects();
-  }
-};
+}
+function escapeHTML(s){
+  return (s||'').replace(/[&<>"']/g, c=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
